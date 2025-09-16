@@ -1,3 +1,6 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main{
@@ -10,6 +13,11 @@ public class Main{
 
 
         System.out.println("Numero de procesadores :"+r.availableProcessors());
-        System.out.println("Propiedades :"+System.getProperties());
+
+        String a=System.getProperties().toString();
+        String[] b=a.split(",");
+        for (int i=0;i<b.length;i++){
+            System.out.println(b[i]);
+        }
     }
 }
