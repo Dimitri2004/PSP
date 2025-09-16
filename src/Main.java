@@ -7,5 +7,9 @@ public class Main{
         System.out.println("Espacio libre :"+r.freeMemory()/1024);
         System.out.println("Espacio total :"+r.totalMemory()/1024);
         System.out.println("Espacio máximo :"+r.maxMemory()/1024);
+
+
+        System.out.println("Numero de procesadores :"+r.availableProcessors());
+        System.out.println("Propiedades :"+System.getProperties());
     }
 }
