@@ -7,18 +7,22 @@ public class Tarea4 {
     public static void main(String[] args) throws IOException {
         String cmdo="dir";
         String ruta="user.dir";
-        String dir="/home/dam/Escritorio/PSP/Tarea2";
-        String dir2="/home/dam/Escritorio/PSP/Tarea1";
-        ProcessBuilder pb=new ProcessBuilder(cmdo);
+        String ruta2="user.home";
+        String dir="/home/dam/Escritorio/PSP/Tarea3";
+        String dir2="/home/dam/Escritorio/PSP/Tarea2";
+        ProcessBuilder pb=new ProcessBuilder(cmdo,dir2);
         Properties properties = System.getProperties();
         pb.inheritIO();
 
-        System.out.println( properties.getProperty(ruta));
+        properties.setProperty(ruta2,dir2);
+        properties.getProperty(ruta);
 
-        properties.setProperty(ruta,dir2);
-        System.out.println( properties.getProperty(ruta));
+        //Cambia la propiedad de la ruta e trabajo
+        properties.setProperty(ruta,dir);
+        properties.getProperty(ruta);
 
-
+        properties.setProperty(ruta,"/temp");
+        properties.getProperty(ruta);
 
         pb.start();
 
