@@ -15,8 +15,4 @@ public class Tarea3 {
         pb.start();
 
     }
-
-
-
-
 }
