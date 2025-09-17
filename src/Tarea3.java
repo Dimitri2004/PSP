@@ -1,6 +1,6 @@
-import java.io.File;
+
 import java.io.IOException;
-import java.util.Objects;
+
 import java.util.Scanner;
 
 public class Tarea3 {
