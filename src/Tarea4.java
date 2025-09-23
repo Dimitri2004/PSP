@@ -11,6 +11,7 @@ public class Tarea4 {
         String dir="/home/dam/Escritorio/PSP/Tarea3";
         String dir2="/home/dam/Escritorio/PSP/Tarea2";
         ProcessBuilder pb=new ProcessBuilder(cmdo,dir2);
+        pb.start();
         Properties properties = System.getProperties();
         pb.inheritIO();
 
@@ -24,7 +25,7 @@ public class Tarea4 {
         properties.setProperty(ruta,"/temp");
         properties.getProperty(ruta);
 
-        pb.start();
+
 
     }
 }
