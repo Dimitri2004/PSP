@@ -4,7 +4,6 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
     CoffeeMachine.makeCoffee()
-    CoffeeMachine.currentState = CoffeeMachineState.Error("Danger")
     CoffeeMachine.currentState = CoffeeMachineState.MakingCoffee
     CoffeeMachine.currentState = CoffeeMachineState.ServingCoffee("Capuccino")
     CoffeeMachine.currentState = CoffeeMachineState.MakingCoffee
@@ -12,6 +11,7 @@ fun main() {
     CoffeeMachine.currentState = CoffeeMachineState.MakingCoffee
     CoffeeMachine.currentState=CoffeeMachineState.SirviendoconAzucar(5)
     CoffeeMachine.currentState = CoffeeMachineState.MakingCoffee
+    CoffeeMachine.currentState = CoffeeMachineState.Error("Danger")
     CoffeeMachine.clean()
 
 }

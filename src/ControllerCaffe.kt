@@ -3,7 +3,7 @@
 
     object CoffeeMachine {
         var currentState: CoffeeMachineState = CoffeeMachineState.Idle
-        var currwntState : CoffeeMachineState = CoffeeMachineState.SirviendoconLeche(7)
+        
 
         fun makeCoffee() {
             println("Estado actual: $currentState")//Inicializa el estado base al que represente
@@ -16,13 +16,13 @@
                     // Simula un proceso de preparación
                     currentState = CoffeeMachineState.ServingCoffee("Capuccino")
                     println("¡Café listo! Estado: $currentState")
-
+                    //Crea un proceso sirviondo el cafe con leche
                     currentState=CoffeeMachineState.SirviendoconLeche(50)
-                    println("$currentState")
-
+                    println("Cafe con leche listo Estado: $currentState"+ "ml")
+                    //Crea un proceso sirviondo el cafe con azucar
                     currentState=CoffeeMachineState.SirviendoconAzucar(50)
 
-                    println("$currentState")
+                    println("Cafe con azucar listo Estado: $currentState"+ "mg")
                 }
 
                 is CoffeeMachineState.MakingCoffee -> {
@@ -33,13 +33,10 @@
                     println("Ya hay café servido. Por favor, toma tu café.")
                 }
                 is CoffeeMachineState.SirviendoconLeche->{
-
-                    println("Agregando Leche:$currentState")
+                    println("No necesitas tanta Leche")
                 }
                 is CoffeeMachineState.SirviendoconAzucar->{
-                    currentState=CoffeeMachineState.SirviendoconLeche(50)
-
-                    println("Agregando Leche:$currentState")
+                    println("Ya tiene suficiente azucar ")
                 }
                 is CoffeeMachineState.Error -> {
                     println("La máquina tiene un error: ${(currentState as CoffeeMachineState.Error).message}")
