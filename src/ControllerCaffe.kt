@@ -1,10 +1,24 @@
-
-
-
-    object CoffeeMachine {
+/**
+ *
+ * Controlador de la máquina de café que gestiona los estados y las operaciones.
+ * @property currentState El estado actual de la máquina de café.
+ * @property cantidadLeche La cantidad de leche disponible en ml.
+ * @property cantidadAzucar La cantidad de azúcar disponible en gramos.
+ * @author Dima
+ * @version 1.0
+ */
+object CoffeeMachine {
         var currentState: CoffeeMachineState = CoffeeMachineState.Idle
-        
+        var cantidadLeche: Int = 70
+        var cantidadAzucar: Int = 40
 
+
+        /**
+         * Inicia el proceso de hacer café dependiendo del estado actual de la máquina.
+         * @param brand La marca del café a preparar (opcional).
+         * @param leche Indica si se debe añadir leche (opcional).
+         * @param azucar Indica si se debe añadir azúcar (opcional).
+         */
         fun makeCoffee() {
             println("Estado actual: $currentState")//Inicializa el estado base al que represente
 
@@ -16,13 +30,7 @@
                     // Simula un proceso de preparación
                     currentState = CoffeeMachineState.ServingCoffee("Capuccino")
                     println("¡Café listo! Estado: $currentState")
-                    //Crea un proceso sirviondo el cafe con leche
-                    currentState=CoffeeMachineState.SirviendoconLeche(50)
-                    println("Cafe con leche listo Estado: $currentState"+ "ml")
-                    //Crea un proceso sirviondo el cafe con azucar
-                    currentState=CoffeeMachineState.SirviendoconAzucar(50)
-
-                    println("Cafe con azucar listo Estado: $currentState"+ "mg")
+                    // Cambia al estado de sirviendo café
                 }
 
                 is CoffeeMachineState.MakingCoffee -> {
@@ -32,20 +40,41 @@
                 is CoffeeMachineState.ServingCoffee -> {
                     println("Ya hay café servido. Por favor, toma tu café.")
                 }
-                is CoffeeMachineState.SirviendoconLeche->{
-                    println("No necesitas tanta Leche")
+                is CoffeeMachineState.SirviendoconLeche -> {
+                    if ((currentState as CoffeeMachineState.SirviendoconLeche).leche==false) {
+                        currentState = CoffeeMachineState.Error("No puedes añadir más leche")
+                        println("Exception: ${(currentState as CoffeeMachineState.Error).message}")
+                        //Lanza una excepcion si se intenta añadir más leche
+                    } else {
+                        println("Estado: ${CoffeeMachineState.ServingCoffee("Capuccino")} con $cantidadLeche ml de leche")
+                    }
                 }
-                is CoffeeMachineState.SirviendoconAzucar->{
-                    println("Ya tiene suficiente azucar ")
+                is CoffeeMachineState.SirviendoconAzucar -> {
+
+                    if ((currentState as CoffeeMachineState.SirviendoconAzucar).azucar==false) {
+                        currentState = CoffeeMachineState.Error("No puedes añadir más azúcar")
+                        println("Exception: ${(currentState as CoffeeMachineState.Error).message}")
+                        //Lanza una excepcion si se intenta añadir más azucar
+                    } else {
+                        println("Sirviendo cafe con $cantidadAzucar g de azúcar ")
+                    }
                 }
                 is CoffeeMachineState.Error -> {
                     println("La máquina tiene un error: ${(currentState as CoffeeMachineState.Error).message}")
                 }
+
             }
+
         }
+
+        /**
+         * Limpia la máquina y resetea su estado a Idle.
+         * @param
+         */
         fun clean() {
             println("Limpiando la máquina...")
             currentState = CoffeeMachineState.Idle
             println("Máquina limpia. Estado: $currentState")
         }
+
     }
