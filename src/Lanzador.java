@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Lanzador {
     public static void Lanzar(String opcion){
@@ -22,7 +20,11 @@ public class Lanzador {
                         estado="[Fallo]";
                     }
                     BufferedReader lectura = new BufferedReader(new InputStreamReader(consola));//Realiza la lectura de los ping de consola al que le asignamos el estado ok y los reproduce añadiendo el mismo
+                    if (f==0){
+                        BufferedInputStream p=new BufferedInputStream(consola);
+                        OutputStream t=new FileOutputStream("/home/dam/Escritorio/PSP/Tarea2/src/pin_output.log");
 
+                    }
                     while (true) {
                         String linea = lectura.readLine();
                         if (linea==null){
