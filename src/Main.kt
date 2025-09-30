@@ -11,7 +11,6 @@ fun main() {
     while (true) {
         val currentState = StateMachine.getState()
 
-
         if ( currentState is CoffeeMachineState.SirviendoconAzucar) {
             println("\n--- Fin café ---")
             break
