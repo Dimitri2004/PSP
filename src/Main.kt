@@ -10,14 +10,15 @@ import javax.swing.plaf.nimbus.State
 fun main(){
     println("--- Encendiendo la máquina ---")
     StateMachine.setState(CoffeeMachineState.Idle)
-
+    println("--- Making Coffee ---")
+    StateMachine.setState(CoffeeMachineState.MakingCoffee)
     println("\n--- Sirviendo cafe ---")
     StateMachine.setState(CoffeeMachineState.ServingCoffee)
-
-    println("\n--- Sirviendo con leche ---")
+    println("\n--- Sirviendo cafe con leche ---")
     StateMachine.setState(CoffeeMachineState.SirviendoconLeche)
-
-    println("\n--- Sirviendo con azucar ---")
+    println("\n--- Sirviendo cafe con azucar ---")
     StateMachine.setState(CoffeeMachineState.SirviendoconAzucar)
+
+
 }
 

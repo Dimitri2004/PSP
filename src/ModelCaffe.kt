@@ -1,27 +1,17 @@
-/**
- * Estados de la maquina de cafe
- * @property Idle Estado inicial, la máquina está apagada.
- * @property MakingCoffee La máquina está en proceso de hacer café.
- * @property ServingCoffee La máquina ha servido el café, almacena la marca del café.
- * @property SirviendoconLeche La máquina está sirviendo café con leche, almacena si se puede añadir más leche.
- * @property SirviendoconAzucar La máquina está sirviendo café con azúcar, almacena si se puede añadir más azúcar.
- * @property Error La máquina ha encontrado un error, almacena el mensaje de error.
- * @constructor Crea un estado de la máquina de café.
- * @author Dima
- * @version 1.0
- */
+
 
 interface ICoffeeMachineState {
-    fun onEnter(stateMachine: StateMachine){
-        StateMachine.getState()
-    }
+    fun onEnter(stateMachine: StateMachine)
+
 }
 
 sealed class CoffeeMachineState: ICoffeeMachineState {
         object Idle : CoffeeMachineState(){
             override fun onEnter(stateMachine: StateMachine){
                 println("[Idle]Estando en Idle ...")
-                stateMachine.setState(MakingCoffee)
+            }
+            init {
+                println("[idle] Máquina en estado Idle.")
             }
         }
         object MakingCoffee : CoffeeMachineState(){
@@ -29,28 +19,40 @@ sealed class CoffeeMachineState: ICoffeeMachineState {
                 println("[Making]Empezando a hacer cafe....")
                 stateMachine.setState(ServingCoffee)
             }
-        }
-            object ServingCoffee : CoffeeMachineState(){
-            override fun onEnter(stateMachine: StateMachine){
-                println("[Serving]Sirviendo cafe...")
-                stateMachine.setState(ServingCoffee)
+            init {
+                println("[Making] Máquina en estado MakingCoffee.")
             }
         }
+        object ServingCoffee : CoffeeMachineState(){
+            override fun onEnter(stateMachine: StateMachine){
+                println("[Serving]Sirviendo cafe...")
+                stateMachine.setState(SirviendoconLeche)
+                }
+            init {
+                println("[Serving] Máquina en estado ServingCoffee.")
+            }
+            }
             object SirviendoconLeche : CoffeeMachineState() {
                 override fun onEnter(stateMachine: StateMachine) {
                     println("[SirviendoLeche]Sirviendo con leche...")
-                    stateMachine.setState(ServingCoffee)
+                    stateMachine.setState(SirviendoconAzucar)
+                }
+                init {
+                    println("[SirviendoLeche] Máquina en estado SirviendoconLeche.")
                 }
             }
             object SirviendoconAzucar : CoffeeMachineState(){
                 override fun onEnter(stateMachine: StateMachine){
                     println("[SirviendoLeche]Sirviendo con leche...")
-                    stateMachine.setState(ServingCoffee)
+                    stateMachine.setState(Idle)
              }
+                init {
+                    println("[SirviendoAzucar] Máquina en estado SirviendoconAzucar.")
+                }
         }
         data class Error(val message: String) : CoffeeMachineState(){
             override fun onEnter(stateMachine: StateMachine) {
-                TODO("Not yet implemented")
+                TODO("NO implementado")
             }
         }
     }
