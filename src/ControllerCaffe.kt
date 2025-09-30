@@ -1,3 +1,4 @@
+@file:Suppress("DUPLICATE_BRANCH_CONDITION_IN_WHEN")
 
 object StateMachine {
    public var currentState: CoffeeMachineState = CoffeeMachineState.Idle
@@ -6,7 +7,7 @@ object StateMachine {
     fun setState(newState: CoffeeMachineState) {
         if (isCorrectoPedido(currentState, newState)) {
             currentState = newState
-            updateState()
+            updateState(CoffeeMachineState.Idle)
 
         } else {
             println("No es posible en $currentState para $newState")
@@ -19,6 +20,7 @@ object StateMachine {
             CoffeeMachineState.MakingCoffee -> to == CoffeeMachineState.ServingCoffee
             CoffeeMachineState.ServingCoffee -> to == CoffeeMachineState.SirviendoconLeche
             CoffeeMachineState.SirviendoconLeche -> to == CoffeeMachineState.SirviendoconAzucar
+            CoffeeMachineState.SirviendoconAzucar -> to == CoffeeMachineState.Idle
             is CoffeeMachineState.Error -> to == CoffeeMachineState.Idle
             else -> false
         }
@@ -29,7 +31,7 @@ object StateMachine {
         return currentState
     }
 
-    fun updateState() {
+    fun updateState(newState: CoffeeMachineState) {
         println("[StateMachine] Estado actual: $currentState")
         currentState.onEnter(this)
     }

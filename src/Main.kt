@@ -1,5 +1,3 @@
-import javax.swing.plaf.nimbus.State
-
 /**
  * Ejemplo de una máquina de café con estados usando Kotlin.
  * Incluye estados como Idle, MakingCoffee, ServingCoffee, SirviendoconLeche y SirviendoconAzucar.
@@ -7,18 +5,17 @@ import javax.swing.plaf.nimbus.State
  * @author Dima
  * @version 1.0
  */
-fun main(){
-    println("--- Encendiendo la máquina ---")
-    StateMachine.setState(CoffeeMachineState.Idle)
-    println("--- Making Coffee ---")
-    StateMachine.setState(CoffeeMachineState.MakingCoffee)
-    println("\n--- Sirviendo cafe ---")
-    StateMachine.setState(CoffeeMachineState.ServingCoffee)
-    println("\n--- Sirviendo cafe con leche ---")
-    StateMachine.setState(CoffeeMachineState.SirviendoconLeche)
-    println("\n--- Sirviendo cafe con azucar ---")
-    StateMachine.setState(CoffeeMachineState.SirviendoconAzucar)
+fun main() {
+    StateMachine.updateState(CoffeeMachineState.Idle)
 
+    while (true) {
+        val currentState = StateMachine.getState()
+
+        if ( currentState is CoffeeMachineState.SirviendoconAzucar) {
+            println("\n--- Fin café ---")
+            break
+        }
+    }
 
 }
 
