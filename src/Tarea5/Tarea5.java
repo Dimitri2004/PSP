@@ -1,3 +1,5 @@
+package Tarea5;
+
 import java.util.Scanner;
 
 public class Tarea5 {

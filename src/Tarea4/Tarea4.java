@@ -1,4 +1,4 @@
-import java.io.File;
+package Tarea4;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -8,7 +8,7 @@ public class Tarea4 {
         String cmdo="dir";
         String ruta="user.dir";
         String ruta2="user.home";
-        String dir="/home/dam/Escritorio/PSP/Tarea3";
+        String dir="/home/dam/Escritorio/PSP/Tarea3.Tarea3";
         String dir2="/home/dam/Escritorio/PSP/Tarea2";
         ProcessBuilder pb=new ProcessBuilder(cmdo,dir2);
         pb.start();

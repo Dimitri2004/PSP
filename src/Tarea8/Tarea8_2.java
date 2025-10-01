@@ -28,6 +28,6 @@ public class Tarea8_2 extends Thread {
     }
 
     public static void main(String[] args){
-        new Tarea8_2(50).start();
+        new Tarea8_2(10).start();
     }
 }
