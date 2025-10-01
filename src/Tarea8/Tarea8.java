@@ -2,7 +2,7 @@ package Tarea8;
 
 public class Tarea8 extends Thread {
     //Nombre y valor de paciancia
-    private int paciencia=4;
+    private int paciencia=5;
     public Tarea8(String nombre,int paciencia){
         super(nombre);
         this.paciencia=paciencia;
