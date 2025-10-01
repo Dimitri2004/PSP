@@ -1,5 +1,7 @@
 package Tarea11;
 
+import java.util.Random;
+
 public class Tarea11 extends Thread {
     int numero;
 
@@ -9,14 +11,17 @@ public class Tarea11 extends Thread {
 
     @Override
     public void run() {
+        int max=600;
+        int min=100;
+        int numeroAleatorio= new Random().nextInt(max-min+1)+min;//genera un aleatorio entre 600 y 100
         int dominio = 6;
         for (int i = 1; i < dominio; i++) {
             System.out.println("[Hilo " + numero + "] iteración: " + i);
 
         }
         try {
-            Thread.sleep((int) (Math.random() * 100)); // Pequeña pausa aleatoria
-            System.out.println("Acabo Hilo-" + numero);
+            Thread.sleep((int) (Math.random() * numeroAleatorio)); // Pequeña pausa aleatoria
+            System.out.println("Acabo Hilo-" + numero);//Secuencia del hilo finalizada
 
         } catch (InterruptedException e) {
             System.out.println("Error " + e);
@@ -27,7 +32,6 @@ public class Tarea11 extends Thread {
     public static void main(String[] args) {
         for (int i = 1; i <= 5; i++) {
             new Tarea11(i).start(); // Crear e iniciar hilo
-
         }
     }
 
