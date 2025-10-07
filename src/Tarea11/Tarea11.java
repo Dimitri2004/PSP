@@ -1,6 +1,8 @@
 package Tarea11;
 
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Tarea11 extends Thread {
     int numero;
@@ -21,11 +23,16 @@ public class Tarea11 extends Thread {
         }
         try {
             Thread.sleep((int) (Math.random() * numeroAleatorio)); // Pequeña pausa aleatoria
-            System.out.println("Acabo Hilo-" + numero);//Secuencia del hilo finalizada
+            //Ordenar la salida de hilos
+            synchronized (System.out) {
+                System.out.println("Acabo Hilo-" + numero);//Secuencia del hilo finalizada
+            }
 
         } catch (InterruptedException e) {
             System.out.println("Error " + e);
         }
+        //relizar join para que el hilo principal espere a que terminen los hilos
+
 
     }
 
