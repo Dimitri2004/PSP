@@ -12,7 +12,6 @@ public class HilosIngreso extends Thread{
             try{
                 Thread.sleep(1);
                 Caja.Añadido();
-
             } catch (InterruptedException e) {
                 System.out.println("Error salida hilo "+e.getMessage());
             }
