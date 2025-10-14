@@ -2,7 +2,7 @@ package Tarea16;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        Contador contadorCompartido= new Contador();
+       Contador contadorCompartido= new Contador();
        Thread h1=new Hilo(contadorCompartido);
        Thread h2=new Hilo(contadorCompartido);
        Thread h3=new Hilo(contadorCompartido);
