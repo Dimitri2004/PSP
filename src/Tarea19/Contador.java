@@ -8,8 +8,8 @@ public class Contador {
     }
     public char VocalesaContar(char frase) {
         if (frase=='a'|frase=='e'|frase=='i'|frase=='o'|frase=='u'){
-            System.out.println("incrementamos "+ frase);
             incrementarvocales();
+            System.out.println("incrementamos "+ frase);
         }
         return frase;
     }
