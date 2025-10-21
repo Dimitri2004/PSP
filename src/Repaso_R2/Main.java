@@ -57,5 +57,6 @@ public class Main {
         System.out.println(h3.getName());
         h3.start();
         h3.join();
+        System.out.println("Pieza lista para lanzar");
     }
 }
