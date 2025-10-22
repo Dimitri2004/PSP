@@ -6,19 +6,29 @@ public class Main {
     public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
         System.out.println("Dame una frase para contar sus vocales:");
-        String g=sc.nextLine();
-        Contador c=new Contador();
-        for (char l : g.toCharArray()) {
-            Hilo h = new Hilo(c, l);
-            h.start();
+        String g=sc.nextLine().toLowerCase();
+        Contador contador=new Contador();
 
-        }
+        Thread c1=new Thread(new Hilo(g.toCharArray(),'a'));
+        Thread c2=new Thread(new Hilo(g.toCharArray(),'e'));
+        Thread c3=new Thread(new Hilo(g.toCharArray(),'i'));
+        Thread c4=new Thread(new Hilo(g.toCharArray(),'o'));
+        Thread c5=new Thread(new Hilo(g.toCharArray(),'u'));
+
+        c1.start();
+        c2.start();
+        c3.start();
+        c4.start();
+        c5.start();
         try {
-            Thread.sleep(1000); // pequeño delay para dar tiempo a que terminen
+            c1.join();
+            c2.join();
+            c3.join();
+            c4.join();
+            c5.join();
         } catch (InterruptedException e) {
             System.out.println("Error en hilo "+e.getMessage());
         }
-
-        System.out.println("Total de vocales "+c.contadas());
+        System.out.println("Total de vocales "+contador.contadas());
     }
 }
