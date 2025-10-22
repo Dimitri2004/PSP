@@ -31,13 +31,12 @@ public class Parking {
             int plaza = plazaLibre();
             plazas[plaza] = coche;
             System.out.println("ENTRADA: Coche "+coche+" aparcando en "+plaza+"\n"+Arrays.toString(plazas));
-
         }
         public synchronized void salir(int coche){
             int plaza = buscarCoche(coche);
             if (plaza != -1){
                 plazas[plaza] = 0;
-                System.out.println("Salida: Coche "+coche+" saliendo de "+plaza+"\n"+ Arrays.toString(plazas));
+                System.out.println("SALIDA: Coche "+coche+" saliendo de "+plaza+"\n"+ Arrays.toString(plazas));
                 notifyAll();
             }
 

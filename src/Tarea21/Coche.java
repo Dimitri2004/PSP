@@ -1,6 +1,7 @@
 package Tarea21;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Coche extends Thread{
     private Parking parking;
@@ -33,10 +34,7 @@ public class Coche extends Thread{
         }
     }
     private long numeroAleatorio(){
-        long tiempo = Math.round(Math.random()*100)+100;
+           long tiempo = (long) (Math.random()*100+100);
         return tiempo;
     }
-
-
-
 }
