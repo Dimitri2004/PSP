@@ -6,7 +6,7 @@ private static final Object miLockPintura = new Object();
 private static final Object miLockEmbalaje = new Object();
 
     static CountDownLatch latch1 = new CountDownLatch(1); // Espera a que Tarea1 termine
-    static CountDownLatch latch2 = new CountDownLatch(1); // Espera a que Tarea1 termine
+    static CountDownLatch latch2 = new CountDownLatch(1); // Espera a que Tarea2 termine
 
 
 
