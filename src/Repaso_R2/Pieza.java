@@ -1,6 +1,7 @@
 package Repaso_R2;
 
 public class Pieza {
+   
     public synchronized void CogerPieza(){
         System.out.println("Cogiendo pieza");
     }

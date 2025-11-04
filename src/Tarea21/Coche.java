@@ -1,7 +1,5 @@
 package Tarea21;
 
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Coche extends Thread{
     private Parking parking;

@@ -1,0 +1,26 @@
+package Tarea25;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+
+public class Main {
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        switch (preguntar()) {
+            case "1","2":
+                Servidor servidor=new Servidor(new Socket(Cliente.getHost(),Cliente.getPort()));
+                servidor.conexion();
+            case "3":
+                System.out.println("saliendo.....");
+                break;
+        }
+    }
+    public static String preguntar(){
+        System.out.println("Que quieres hacer: 1.dar host 2.dar puerto  3.salir");
+        String eleccion = sc.next();
+        return eleccion;
+    }
+}
