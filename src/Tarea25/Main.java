@@ -14,7 +14,6 @@ public class Main {
         do {
             switch (preguntar()) {
                 case 1, 2:
-
                     Servidor servidor = new Servidor(new Socket(Cliente.getHost(), Cliente.getPort()));
                     servidor.conexion();
                     break;
