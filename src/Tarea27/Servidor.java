@@ -2,35 +2,31 @@ package Tarea27;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
-import static Tarea27.Cliente.sk;
 
 public class Servidor {
-    static ServerSocket sek;
 
-    static {
+
+    public static void main(String[] args){
         try {
-            sek = new ServerSocket();
+            InetSocketAddress isa=new InetSocketAddress("localhost",8080);
+            String lectura,contenido;
+            ServerSocket servidor=new ServerSocket();
+            servidor.bind(isa);
+            Socket cliente=servidor.accept();
+            BufferedReader leer=new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            PrintWriter escribir=new PrintWriter(cliente.getOutputStream(),true);
+            while (true){
+                lectura= leer.readLine();
+                contenido="ECO "+lectura;
+                escribir.println(contenido);
+                if (lectura == null || lectura.equalsIgnoreCase("adios")) break;
+            }
+            cliente.close();
+            servidor.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error archivo no encontrado : " + e.getMessage());
         }
-    }
-
-    static InetSocketAddress isa=new InetSocketAddress(8000);
-
-    public static String leer() throws IOException {
-        String lectura="";
-
-        try {
-            BufferedReader file=new BufferedReader(new FileReader("Linea.txt"));
-            lectura = file.readLine();
-            file.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Error archivo no encontrado : "+e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error en entrada/salida "+e.getMessage());
-        }
-        return "ECO: "+lectura;
-
     }
 }

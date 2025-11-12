@@ -1,30 +1,37 @@
 package Tarea27;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-import static Tarea27.Servidor.isa;
-import static Tarea27.Servidor.sek;
 
 public class Cliente {
-
-    static Socket sk=new Socket();
-    public static void escribir(){
+    public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
+        InetSocketAddress isa=new InetSocketAddress("localhost",8080);
+        String mensaje,contenido;
         try{
-            sk.bind(isa);
-            sk = sek.accept();
-            BufferedWriter buff=new BufferedWriter(new FileWriter("Linea.txt"));
-            System.out.println("Dame un mensaje de despedida");
-            String mensaje=sc.next();
-            for (int i = 0; i < 4; i++){
-            buff.write(mensaje);
-            sk.close();
+            Socket cliente= new Socket();
+            cliente.connect(isa);
+
+            System.out.println("Cliente conectado al servidor");
+            PrintWriter escritor = new PrintWriter(cliente.getOutputStream(),true);
+            BufferedReader lector = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+
+
+            while (true) {
+                System.out.println("Escribe un mensaje");
+                mensaje = sc.nextLine();
+
+                escritor.println(mensaje);
+                contenido = lector.readLine();
+                System.out.println(contenido);
+                if (mensaje.equalsIgnoreCase("adios")) break;
             }
-            buff.close();
+            cliente.close();
         } catch (IOException e) {
-            System.out.println("Error en entrada/salida "+e.getMessage());
+            System.out.println("Error en es/sa "+e.getMessage());
         }
 
     }
