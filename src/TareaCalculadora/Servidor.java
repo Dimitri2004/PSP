@@ -25,6 +25,9 @@ public class Servidor {
                 System.out.println("Servidor detenido.");
                 break;
             }
+
+            Calculadora c=new Calculadora(msj);
+            c.start();
         }
         socket.close();
     }
