@@ -1,5 +1,7 @@
 package TareaCalculadora;
 
+import java.nio.charset.CharacterCodingException;
+
 public class Calculadora extends Thread{
     private String msj;
     public Calculadora(String msj){
@@ -8,11 +10,10 @@ public class Calculadora extends Thread{
 
     @Override
     public void run(){
-        if (msj.contains("+")){
-            String[] msj2=msj.split("");
-            int a= Integer.parseInt(msj2[0]);
-            int b=Integer.parseInt(msj2[2]);
-            System.out.println(a+b);
+        try {
+            System.out.println(Funciones.Sumar(msj));
+        } catch (Exception e) {
+            System.out.println("Error en ecuacion");
         }
     }
 }

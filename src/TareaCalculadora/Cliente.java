@@ -6,42 +6,48 @@ import java.util.Scanner;
 
 
 public class Cliente {
-    public static void main(String[] args) {
-        Scanner sc=new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        DatagramSocket datagramSocket = new DatagramSocket();
+        InetAddress direccionServidor = InetAddress.getByName("localhost");
         try {
-            System.out.println("Dame una ecuacion de segundo grado: (ej:x²+bx+c=2)");
+            while (true) {
+                System.out.println("Introduce tu operación o número ('salir' para terminar):");
+                String entrada = sc.nextLine().trim();
 
-            String msj=sc.nextLine();
-            DatagramSocket datagramSocket = new DatagramSocket();
-            InetAddress direccionServidor = InetAddress.getByName("localhost");
+                // Salir del bucle
+                if (entrada.equalsIgnoreCase("salir")) {
+                    byte[] cerrar = entrada.getBytes();
+                    DatagramPacket fin = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
+                    datagramSocket.send(fin);
+                    System.out.println("Saliendo del cliente...");
+                    break;
+                }
 
-            byte[] bufferEnviar=msj.getBytes();
+                // Validar que NO contenga letras
+                if (entrada.matches(".*[a-zA-Z]+.*")) { // si contiene alguna letra
+                    System.out.println("ERROR: No se aceptan letras. Solo números y símbolos.");
+                    continue;
+                }
 
+                // Enviar mensaje al servidor
+                byte[] bufferEnviar = entrada.getBytes();
+                DatagramPacket paquete = new DatagramPacket(bufferEnviar, bufferEnviar.length, direccionServidor, 9001);
+                datagramSocket.send(paquete);
 
-            // Enviar ecuación
-            DatagramPacket paquete = new DatagramPacket(bufferEnviar, bufferEnviar.length, direccionServidor, 9001);
-            datagramSocket.send(paquete);
+                // Recibir respuesta del servidor
+                byte[] bufferRecibido = new byte[8192];
+                DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
+                datagramSocket.receive(paqueteRecibido);
 
-            // Recibir confirmación/pregunta del servidor
-            byte[] bufferRecibido = new byte[8192];
-            DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
-            datagramSocket.receive(paqueteRecibido);
-            String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength());
-            System.out.println(msjServidor);
-
-            // Opcional: recibir mensaje final del servidor
-            paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
-            datagramSocket.receive(paqueteRecibido);
-            System.out.println(new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength()));
+                String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength());
+                System.out.println("Servidor: " + msjServidor);
+            }
 
             datagramSocket.close();
-
-        } catch (SocketException ex) {
-            System.out.println("Error con socket : "+ex.getMessage());
-        } catch (UnknownHostException ex) {
-            System.out.println("Error inesperado en host :"+ex.getMessage());
-        } catch (IOException ex) {
-            System.out.println("Error en conexion de e/s :"+ex.getMessage());
+            sc.close();
+        } catch (Exception e) {
+            System.out.println("Error vuelve a intentar");
         }
-        }
+    }
 }
