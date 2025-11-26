@@ -1,13 +1,10 @@
 package TareaCalculadora;
 
-import Tarea32.ClienteUDP;
-
 import java.io.IOException;
 import java.net.*;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class Cliente {
     public static void main(String[] args) {
@@ -21,23 +18,24 @@ public class Cliente {
 
             byte[] bufferEnviar=msj.getBytes();
 
+
+            // Enviar ecuación
             DatagramPacket paquete = new DatagramPacket(bufferEnviar, bufferEnviar.length, direccionServidor, 9001);
             datagramSocket.send(paquete);
+
+            // Recibir confirmación/pregunta del servidor
+            byte[] bufferRecibido = new byte[8192];
+            DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
+            datagramSocket.receive(paqueteRecibido);
+            String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength());
+            System.out.println(msjServidor);
+
+            // Opcional: recibir mensaje final del servidor
+            paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
+            datagramSocket.receive(paqueteRecibido);
+            System.out.println(new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength()));
+
             datagramSocket.close();
-
-            DatagramSocket socket2=new DatagramSocket(9003);
-            byte[] bufferRecibido=new byte[700000000];
-            while (true) {
-                DatagramPacket peticion = new DatagramPacket(bufferRecibido, bufferRecibido.length);
-
-                socket2.receive(peticion);
-
-                String msjServidor = new String(peticion.getData(),0,peticion.getLength());
-                System.out.println(msjServidor);
-                if (msjServidor.isEmpty()){
-                    break;
-                }
-            }
 
         } catch (SocketException ex) {
             System.out.println("Error con socket : "+ex.getMessage());
