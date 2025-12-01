@@ -63,6 +63,7 @@ public class Servidor {
                     System.out.println("Error procesando mensaje: " + e.getMessage());
                 }
 
+
                 // Respuesta al cliente
                 byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
 
