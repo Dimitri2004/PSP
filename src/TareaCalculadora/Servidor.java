@@ -1,12 +1,9 @@
 package TareaCalculadora;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Servidor {
 
@@ -26,20 +23,15 @@ public class Servidor {
                         paquete.getLength(),
                         StandardCharsets.UTF_8
                 ).trim();
-                if (extracted(msj)) continue;
-                if (extracted1(msj)) break;
+                if (Errores.extracted(msj)) continue; // Error en escribir valor nulo
+                if (Errores.extracted1(msj)) break; //Salir de Servidor
                 String resultado;
-                if (extracted(msj, func, paquete, socket)) continue;
+                if (Errores.extracted(msj, func, paquete, socket)) continue; // recoger el valor ans
                 resultado = getResultado(func, msj);
                 // Respuesta al cliente
                 byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
 
-                DatagramPacket paqueteEnviar = new DatagramPacket(
-                        bufferEnviar,
-                        bufferEnviar.length,
-                        paquete.getAddress(),
-                        paquete.getPort()
-                );
+                DatagramPacket paqueteEnviar = new DatagramPacket(bufferEnviar,bufferEnviar.length,paquete.getAddress(),paquete.getPort());
                 socket.send(paqueteEnviar);
 
             } catch (IOException e) {
@@ -59,35 +51,5 @@ public class Servidor {
             System.out.println("Error procesando mensaje: " + e.getMessage());
         }
         return resultado;
-    }
-
-    private static boolean extracted(String msj, Funciones func, DatagramPacket paquete, DatagramSocket socket) throws IOException {
-        if (msj.equals("ans")) {
-            String respuestaAns = String.valueOf(func.getAns());
-
-            byte[] enviar = respuestaAns.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket packetEnviar = new DatagramPacket(enviar, enviar.length,
-                    paquete.getAddress(), paquete.getPort());
-
-            socket.send(packetEnviar);
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean extracted1(String msj) {
-        if (msj.equalsIgnoreCase("Salir")) {
-            System.out.println("[Servidor] Servidor detenido por el cliente.");
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean extracted(String msj) {
-        if (msj.isEmpty()) {
-            System.out.println("Servidor: paquete vacío recibido");
-            return true;
-        }
-        return false;
     }
 }
