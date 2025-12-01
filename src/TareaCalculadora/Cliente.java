@@ -40,7 +40,6 @@ public class Cliente {
                 // Validar que NO contenga letras distintas de las permitidas
                 if (entrada.matches(".*[a-zA-Z]+.*")) {
                     if (entrada.contains("ans")) {
-                        System.out.println("[Servidor] El valor actual de ans es: " + msjServidor);
                         System.out.println("[Servidor] Respuesta: " + msjServidor);
                         continue; // no imprimimos otra vez
                     } else {

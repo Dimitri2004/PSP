@@ -19,7 +19,6 @@ public class Servidor {
             try {
                 DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
                 socket.receive(paquete);
-
                 // Obtener texto
                 String msj = new String(
                         paquete.getData(),
@@ -27,43 +26,11 @@ public class Servidor {
                         paquete.getLength(),
                         StandardCharsets.UTF_8
                 ).trim();
-
-                // Paquete vacío → NO detenemos servidor
-                if (msj.isEmpty()) {
-                    System.out.println("Servidor: paquete vacío recibido");
-                    continue;
-                }
-
-
-                // Comando para detener servidor
-                if (msj.equalsIgnoreCase("Salir")) {
-                    System.out.println("[Servidor] Servidor detenido por el cliente.");
-                    break;
-                }
-
+                if (extracted(msj)) continue;
+                if (extracted1(msj)) break;
                 String resultado;
-
-                if (msj.equals("ans")) {
-                    String respuestaAns = String.valueOf(func.getAns());
-
-                    byte[] enviar = respuestaAns.getBytes(StandardCharsets.UTF_8);
-                    DatagramPacket packetEnviar = new DatagramPacket(enviar, enviar.length,
-                            paquete.getAddress(), paquete.getPort());
-
-                    socket.send(packetEnviar);
-                    continue;
-                }
-                try {
-                    // Procesar operación
-                    resultado = String.valueOf(func.Operaciones(msj));
-
-                } catch (Exception e) {
-                    // Error del cálculo → pero NO se cierra el servidor
-                    resultado = "ERROR: operación inválida.";
-                    System.out.println("Error procesando mensaje: " + e.getMessage());
-                }
-
-
+                if (extracted(msj, func, paquete, socket)) continue;
+                resultado = getResultado(func, msj);
                 // Respuesta al cliente
                 byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
 
@@ -73,7 +40,6 @@ public class Servidor {
                         paquete.getAddress(),
                         paquete.getPort()
                 );
-
                 socket.send(paqueteEnviar);
 
             } catch (IOException e) {
@@ -82,5 +48,46 @@ public class Servidor {
             }
         }
         socket.close();
+    }
+    private static String getResultado(Funciones func, String msj) {
+        String resultado;
+        try {
+            resultado = String.valueOf(func.Operaciones(msj));
+
+        } catch (Exception e) {
+            resultado = "ERROR: operación inválida.";
+            System.out.println("Error procesando mensaje: " + e.getMessage());
+        }
+        return resultado;
+    }
+
+    private static boolean extracted(String msj, Funciones func, DatagramPacket paquete, DatagramSocket socket) throws IOException {
+        if (msj.equals("ans")) {
+            String respuestaAns = String.valueOf(func.getAns());
+
+            byte[] enviar = respuestaAns.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket packetEnviar = new DatagramPacket(enviar, enviar.length,
+                    paquete.getAddress(), paquete.getPort());
+
+            socket.send(packetEnviar);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean extracted1(String msj) {
+        if (msj.equalsIgnoreCase("Salir")) {
+            System.out.println("[Servidor] Servidor detenido por el cliente.");
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean extracted(String msj) {
+        if (msj.isEmpty()) {
+            System.out.println("Servidor: paquete vacío recibido");
+            return true;
+        }
+        return false;
     }
 }
