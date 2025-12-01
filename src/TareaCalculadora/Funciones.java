@@ -1,25 +1,62 @@
 package TareaCalculadora;
 
 public class Funciones {
-    public static int Operaciones(String msj){
+
+    private int ans = 0; // valor persistente
+
+    public int Operaciones(String msj) {
         msj = msj.trim();
+
         if (msj.contains("+")) {
-            String[] partes = msj.split("\\+");
-            return Integer.parseInt(partes[0]) + Integer.parseInt(partes[1]);
+
+            return Suma(msj);
         }
         if (msj.contains("-")) {
-            String[] partes = msj.split("-");
-            return Integer.parseInt(partes[0]) - Integer.parseInt(partes[1]);
+            return Resta(msj);
         }
         if (msj.contains("*")) {
-            String[] partes = msj.split("\\*");
-            return Integer.parseInt(partes[0]) * Integer.parseInt(partes[1]);
+            return Multi(msj);
         }
         if (msj.contains("/")) {
-            String[] partes = msj.split("/");
-            return Integer.parseInt(partes[0]) / Integer.parseInt(partes[1]);
+            return Div(msj);
         }
-        System.out.println("Error en simbología, haber estudiao bobo");
+
+        System.out.println("[Error]: operación mal formulada");
         return 0;
+    }
+
+    private int getValor(String x) {
+        if (x.contains("ans")) {
+            return ans;
+        }
+        return Integer.parseInt(x);
+    }
+
+    public int Suma(String msj) {
+        String[] partes = msj.split("\\+");
+        int resultado = getValor(partes[0]) + getValor(partes[1]);
+        ans = resultado;
+        return resultado;
+    }
+
+    public int Resta(String msj) {
+        String[] partes = msj.split("-");
+        int resultado = getValor(partes[0]) - getValor(partes[1]);
+        ans = resultado;
+        return resultado;
+    }
+
+    public int Multi(String msj) {
+        String[] partes = msj.split("\\*");
+        int resultado = getValor(partes[0]) * getValor(partes[1]);
+        ans = resultado;
+        return resultado;
+    }
+
+    public int Div(String msj) {
+        String[] partes = msj.split("/");
+        int resultado = getValor(partes[0]) / getValor(partes[1]);
+        ans = resultado;
+        return resultado;
     }
 }

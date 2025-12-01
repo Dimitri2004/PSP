@@ -26,8 +26,15 @@ public class Cliente {
 
                 // Validar que NO contenga letras
                 if (entrada.matches(".*[a-zA-Z]+.*")) { // si contiene alguna letra
-                    System.out.println("ERROR: No se aceptan letras. Solo números y símbolos.");
-                    continue;
+                    if (entrada.contains("ans")){
+                        byte[] cerrar = entrada.getBytes();
+                        DatagramPacket fin2 = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
+                        datagramSocket.send(fin2);
+                    }else{
+                        System.out.println("Error no se permiten caracteres distintos de 'ans'");
+                        continue;
+                    }
+
                 }
 
                 // Enviar mensaje al servidor

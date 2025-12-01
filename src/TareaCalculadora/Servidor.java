@@ -9,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class Servidor {
+
     public static void main(String[] args) throws IOException {
+        Funciones func=new Funciones();
         DatagramSocket socket = new DatagramSocket(9001);
         byte[] buffer = new byte[8192]; // tamaño razonable
 
@@ -28,12 +30,11 @@ public class Servidor {
                 System.out.println("Servidor detenido.");
                 break;
             }
-
             // Procesar la operación usando tu Calculadora
             Calculadora c = new Calculadora(msj);
             c.start();
 
-            String resultado= String.valueOf(Funciones.Operaciones(msj));
+            String resultado= String.valueOf(func.Operaciones(msj));
 
             // Enviar resultado de vuelta al cliente
             byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
