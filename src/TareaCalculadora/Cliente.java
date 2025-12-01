@@ -12,30 +12,9 @@ public class Cliente {
         InetAddress direccionServidor = InetAddress.getByName("localhost");
         try {
             while (true) {
-                System.out.println("Introduce tu operación o número ('salir' para terminar):");
+                System.out.println("[Cliente] Introduce tu operación o número ('salir' para terminar):");
                 String entrada = sc.nextLine().trim();
 
-                // Salir del bucle
-                if (entrada.equalsIgnoreCase("salir")) {
-                    byte[] cerrar = entrada.getBytes();
-                    DatagramPacket fin = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
-                    datagramSocket.send(fin);
-                    System.out.println("Saliendo del cliente...");
-                    break;
-                }
-
-                // Validar que NO contenga letras
-                if (entrada.matches(".*[a-zA-Z]+.*")) { // si contiene alguna letra
-                    if (entrada.contains("ans")){
-                        byte[] cerrar = entrada.getBytes();
-                        DatagramPacket fin2 = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
-                        datagramSocket.send(fin2);
-                    }else{
-                        System.out.println("Error no se permiten caracteres distintos de 'ans'");
-                        continue;
-                    }
-
-                }
 
                 // Enviar mensaje al servidor
                 byte[] bufferEnviar = entrada.getBytes();
@@ -47,8 +26,35 @@ public class Cliente {
                 DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
                 datagramSocket.receive(paqueteRecibido);
 
+
+                // Salir del bucle
+                if (entrada.equalsIgnoreCase("salir")) {
+                    byte[] cerrar = entrada.getBytes();
+                    DatagramPacket fin = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
+                    datagramSocket.send(fin);
+                    System.out.println("[Cliente] Saliendo del cliente...");
+                    break;
+                }
+
+
+                String msjAns=new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength());
+
+                // Validar que NO contenga letras distintas de las permitidas
+                if (entrada.matches(".*[a-zA-Z]+.*")) {
+                    if (entrada.contains("ans")){
+                        System.out.println("[Servidor] El valor actual de ans es : "+msjAns);
+                    }else{
+                        System.out.println("[Cliente] Error no se permiten caracteres distintos de 'ans'");
+                        continue;
+                    }
+                }
+                if (entrada.isEmpty()){
+                    System.out.println("[Cliente] No hay valores");
+                    continue;
+                }
+
                 String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength());
-                System.out.println("Servidor: " + msjServidor);
+                System.out.println("[Servidor] Respuesta:  " + msjServidor);
             }
 
             datagramSocket.close();

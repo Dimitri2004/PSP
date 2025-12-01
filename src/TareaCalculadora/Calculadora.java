@@ -14,7 +14,7 @@ public class Calculadora extends Thread{
     public void run(){
         Funciones func=new Funciones();
         try {
-            System.out.println(func.Operaciones(msj));
+           func.Operaciones(msj);
         } catch (Exception e) {
             System.out.println("Error en ecuacion");
         }
