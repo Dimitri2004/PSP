@@ -27,7 +27,7 @@ public class Servidor {
                 if (Errores.extracted1(msj)) break; //Salir de Servidor
                 String resultado;
                 if (Errores.extracted(msj, func, paquete, socket)) continue; // recoger el valor ans
-                resultado = getResultado(func, msj);
+                resultado = Errores.getResultado(func, msj);
                 // Respuesta al cliente
                 byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
 
@@ -40,16 +40,5 @@ public class Servidor {
             }
         }
         socket.close();
-    }
-    private static String getResultado(Funciones func, String msj) {
-        String resultado;
-        try {
-            resultado = String.valueOf(func.Operaciones(msj));
-
-        } catch (Exception e) {
-            resultado = "ERROR: operación inválida.";
-            System.out.println("Error procesando mensaje: " + e.getMessage());
-        }
-        return resultado;
     }
 }

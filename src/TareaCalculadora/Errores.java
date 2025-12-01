@@ -33,4 +33,15 @@ public class Errores {
         }
         return false;
     }
+    static String getResultado(Funciones func, String msj) {
+        String resultado;
+        try {
+            resultado = String.valueOf(func.Operaciones(msj));
+
+        } catch (Exception e) {
+            resultado = "ERROR: operación inválida.";
+            System.out.println("Error procesando mensaje: " + e.getMessage());
+        }
+        return resultado;
+    }
 }
