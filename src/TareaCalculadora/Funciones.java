@@ -1,7 +1,7 @@
 package TareaCalculadora;
 
 public class Funciones {
-    public static int Sumar(String msj){
+    public static int Operaciones(String msj){
         msj = msj.trim();
         if (msj.contains("+")) {
             String[] partes = msj.split("\\+");

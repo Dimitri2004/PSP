@@ -11,7 +11,7 @@ public class Calculadora extends Thread{
     @Override
     public void run(){
         try {
-            System.out.println(Funciones.Sumar(msj));
+            System.out.println(Funciones.Operaciones(msj));
         } catch (Exception e) {
             System.out.println("Error en ecuacion");
         }

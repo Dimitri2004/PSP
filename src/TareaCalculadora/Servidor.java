@@ -33,7 +33,7 @@ public class Servidor {
             Calculadora c = new Calculadora(msj);
             c.start();
 
-            String resultado= String.valueOf(Funciones.Sumar(msj));
+            String resultado= String.valueOf(Funciones.Operaciones(msj));
 
             // Enviar resultado de vuelta al cliente
             byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
