@@ -1,68 +1,65 @@
 package TareaCalculadora;
 
-import javax.swing.text.html.parser.Parser;
-
 public class Funciones {
 
-    private int ans=0; // valor persistente
+    private double ans = 0;
 
-    public int Operaciones(String msj) {
-        msj = msj.trim();
-        if (msj.contains("+")) {
-            return Suma(msj);
-        }
-        if (msj.contains("-")) {
-            return Resta(msj);
-        }
-        if (msj.contains("*")) {
-            return Multi(msj);
-        }
-        if (msj.contains("/")) {
-            return Div(msj);
-        }
-
-        System.out.println("[Error]: operación mal formulada");
-        return 0;
+    public double getAns() {
+        return ans;
     }
 
+    public double Operaciones(String expr) throws Exception {
+        if (expr == null || expr.isEmpty()) throw new Exception("Expresión vacía");
 
-    private int getValor(String x) {
-        if (x.contains("ans")) {
-            return ans;
+        // Reemplaza ans por su valor
+        expr = expr.replace("ans", String.valueOf(ans));
+
+        // Quita espacios
+        expr = expr.replace(" ", "");
+
+        double resultado;
+
+        // SUMA
+        if (expr.contains("+")) {
+            String[] p = expr.split("\\+");
+            if (p.length != 2) throw new Exception("Formato inválido");
+            resultado = Double.parseDouble(p[0]) + Double.parseDouble(p[1]);
+            ans = resultado;
+            return resultado;
         }
-        return Integer.parseInt(x);
-    }
 
+        // RESTA
+        if (expr.contains("-")) {
+            String[] p = expr.split("-");
+            if (p.length != 2) throw new Exception("Formato inválido");
+            resultado = Double.parseDouble(p[0]) - Double.parseDouble(p[1]);
+            ans = resultado;
+            return resultado;
+        }
 
-    public int Suma(String msj) {
-        String[] partes = msj.split("\\+");
-        int resultado = getValor(partes[0]) + getValor(partes[1]);
+        // MULTIPLICACIÓN
+        if (expr.contains("*")) {
+            String[] p = expr.split("\\*");
+            if (p.length != 2) throw new Exception("Formato inválido");
+            resultado = Double.parseDouble(p[0]) * Double.parseDouble(p[1]);
+            ans = resultado;
+            return resultado;
+        }
+
+        // DIVISIÓN
+        if (expr.contains("/")) {
+            String[] p = expr.split("/");
+            if (p.length != 2) throw new Exception("Formato inválido");
+            double divisor = Double.parseDouble(p[1]);
+            if (divisor == 0) throw new Exception("División por 0");
+            resultado = Double.parseDouble(p[0]) / divisor;
+            ans = resultado;
+            return resultado;
+        }
+
+        // Si solo es un número
+        resultado = Double.parseDouble(expr);
         ans = resultado;
         return resultado;
-    }
-
-    public int Resta(String msj) {
-        String[] partes = msj.split("-");
-        int resultado = getValor(partes[0]) - getValor(partes[1]);
-        ans = resultado;
-        return resultado;
-    }
-
-    public int Multi(String msj) {
-        String[] partes = msj.split("\\*");
-        int resultado = getValor(partes[0]) * getValor(partes[1]);
-        ans = resultado;
-        return resultado;
-    }
-
-    public int Div(String msj) {
-        String[] partes = msj.split("/");
-        int resultado = getValor(partes[0]) / getValor(partes[1]);
-        ans = resultado;
-        return resultado;
-    }
-
-    public int getAns() {
-        return ans-1;
     }
 }

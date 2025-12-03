@@ -1,59 +1,61 @@
 package TareaCalculadora;
 
-import java.io.IOException;
-import java.net.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Cliente {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        DatagramSocket datagramSocket = new DatagramSocket();
-        InetAddress direccionServidor = InetAddress.getByName("localhost");
 
-        try {
+        try (Socket socket = new Socket("localhost", 9001);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"))
+        ) {
+            System.out.println("[Cliente TCP] Conectado al servidor.");
+
             while (true) {
                 System.out.println("[Cliente] Introduce tu operación o número ('salir' para terminar):");
                 String entrada = sc.nextLine().trim();
 
-                // Salir del cliente si escribe "salir"
+                // --- Salir del cliente ---
                 if (entrada.equalsIgnoreCase("salir")) {
-                    byte[] cerrar = entrada.getBytes();
-                    DatagramPacket fin = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
-                    datagramSocket.send(fin);
-
-                    System.out.println("[Cliente] Saliendo del cliente...");
-                    break; // rompe el bucle y cierra socket y scanner
+                    writer.write("salir");
+                    writer.newLine();
+                    writer.flush();
+                    System.out.println("[Cliente] Saliendo...");
+                    break;
                 }
 
-                // Enviar mensaje al servidor
-                byte[] bufferEnviar = entrada.getBytes();
-                DatagramPacket paquete = new DatagramPacket(bufferEnviar, bufferEnviar.length, direccionServidor, 9001);
-                datagramSocket.send(paquete);
+                // --- Enviar la operación al servidor ---
+                writer.write(entrada);
+                writer.newLine();
+                writer.flush();
 
-                // Recibir respuesta del servidor
-                byte[] bufferRecibido = new byte[8192];
-                DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
-                datagramSocket.receive(paqueteRecibido);
+                // --- Recibir respuesta ---
+                String respuesta = reader.readLine();
 
-                String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength()).trim();
-
-                // Validar que NO contenga letras distintas de las permitidas
+                // --- Validación como en tu cliente UDP ---
                 if (entrada.matches(".*[a-zA-Z]+.*")) {
                     if (entrada.contains("ans")) {
-                        System.out.println("[Servidor] Respuesta: " + msjServidor);
-                        continue; // no imprimimos otra vez
+                        System.out.println("[Servidor] Respuesta: " + respuesta);
+                        continue;
                     } else {
                         System.out.println("[Cliente] Error: solo se permite 'ans'");
                         continue;
                     }
                 }
-                System.out.println("[Servidor] Respuesta: " + msjServidor);
+
+                System.out.println("[Servidor] Respuesta: " + respuesta);
             }
-        } catch (Exception e) {
-            System.out.println("[Cliente] Error en la comunicación. Vuelve a intentar.");
-        } finally {
-            datagramSocket.close();
-            sc.close();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (UnknownHostException e) {
+            System.out.println("Error desconocido : "+e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error :"+e.getMessage());
         }
+        sc.close();
     }
 }
