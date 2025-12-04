@@ -3,48 +3,48 @@ package TareaCalculadora;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Servidor {
 
-    private static final int PUERTO = 9001;
-    private static final int TIMEOUT_MS = 10000; // 10 segundos
-    private static final String LOG_FILE = "log.txt";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final int port = 9001;
+    private static final String log = "log.txt";
+    private static final DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Punto de entrada del servidor.
+     * @param args
+     */
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PUERTO)) {
-            serverSocket.setSoTimeout(TIMEOUT_MS);
-            System.out.println("Servidor TCP escuchando en puerto " + PUERTO + "...");
-            System.out.println("Se cerrará si no hay clientes conectados en " + (TIMEOUT_MS/1000) + " segundos.");
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Servidor escuchando en el puerto " + port + "...");
 
             while (true) {
-                try {
-                    Socket cliente = serverSocket.accept(); // Espera cliente hasta TIMEOUT_MS
-                    System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
-                    new Thread(() -> manejarCliente(cliente)).start();
+                // Espera conexiones de clientes
+                Socket cliente = serverSocket.accept();
+                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
 
-                } catch (SocketTimeoutException e) {
-                    System.out.println("No se conectaron clientes en el tiempo límite. Cerrando servidor...");
-                    break; // Sale del while y cierra el servidor
-                }
+                // Cada cliente se atiende en un hilo aparte
+                new Thread(() -> manejarCliente(cliente)).start();
             }
 
         } catch (IOException e) {
-            System.out.println("Error en el servidor: " + e.getMessage());
+            System.out.println("Servidor cerrado.");
         }
     }
 
+    /**
+     * Maneja la comunicación con un cliente específico.
+     * @param cliente
+     */
     private static void manejarCliente(Socket cliente) {
         Funciones func = new Funciones();
-
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(cliente.getOutputStream()))
         ) {
-            String msj;
+            String msj; // mensaje del cliente
             while ((msj = reader.readLine()) != null) {
                 msj = msj.trim();
 
@@ -56,32 +56,35 @@ public class Servidor {
                     writer.flush();
                     continue;
                 }
-
                 String resultado;
                 try {
                     resultado = String.valueOf(func.Operaciones(msj));
                 } catch (Exception e) {
                     resultado = "ERROR: operación inválida";
-                }
+                }// Enviar resultado al cliente
 
                 writer.write(resultado);
                 writer.newLine();
                 writer.flush();
                 log("Cliente " + cliente.getInetAddress().getHostAddress() + " Operación: " + msj + " → " + resultado);
-            }
-
+            }// Fin del while de mensajes
         } catch (IOException e) {
             System.out.println("Error con el cliente: " + e.getMessage());
         } finally {
             try {
                 cliente.close();
             } catch (IOException ignored) {}
-        }
+        }// Fin del manejo del cliente
     }
 
+    /**
+     * Escribe un mensaje en el archivo de log con marca de tiempo.
+     * @param mensaje
+     */
+
     private static void log(String mensaje) {
-        try (FileWriter fw = new FileWriter(LOG_FILE, true)) {
-            fw.write("[" + LocalDateTime.now().format(FORMATTER) + "] " + mensaje + "\n");
+        try (FileWriter fw = new FileWriter(log, true)) {
+            fw.write("[" + LocalDateTime.now().format(formato) + "] " + mensaje + "\n");
         } catch (IOException e) {
             System.out.println("Error al escribir log: " + e.getMessage());
         }

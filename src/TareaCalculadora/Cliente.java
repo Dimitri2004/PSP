@@ -6,20 +6,27 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Cliente {
-    public static void main(String[] args) {
+    /**
+     * Punto de entrada del cliente.
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
+        Socket socket = new Socket("localhost", 9001);// punto de acceso al servidor
+        // Conexión al servidor
 
-        try (Socket socket = new Socket("localhost", 9001);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"))
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));// bufferedReader para leer del servidor
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"))// bufferedWriter para escribir al servidor
         ) {
             System.out.println("[Cliente TCP] Conectado al servidor.");
 
+            // Bucle principal para enviar operaciones al servidor
             while (true) {
                 System.out.println("[Cliente] Introduce tu operación o número ('salir' para terminar):");
                 String entrada = sc.nextLine().trim();
 
-                // --- Salir del cliente ---
+                // Comprobar si el usuario quiere salir
                 if (entrada.equalsIgnoreCase("salir")) {
                     writer.write("salir");
                     writer.newLine();
@@ -27,16 +34,15 @@ public class Cliente {
                     System.out.println("[Cliente] Saliendo...");
                     break;
                 }
-
-                // --- Enviar la operación al servidor ---
+                //Enviar la entrada al servidor
                 writer.write(entrada);
                 writer.newLine();
                 writer.flush();
 
-                // --- Recibir respuesta ---
+                // Leer la respuesta del servidor
                 String respuesta = reader.readLine();
 
-                // --- Validación como en tu cliente UDP ---
+                // Validación de letras no permitidas
                 if (entrada.matches(".*[a-zA-Z]+.*")) {
                     if (entrada.contains("ans")) {
                         System.out.println("[Servidor] Respuesta: " + respuesta);
@@ -46,16 +52,16 @@ public class Cliente {
                         continue;
                     }
                 }
-
+                // Mostrar la respuesta del servidor
                 System.out.println("[Servidor] Respuesta: " + respuesta);
             }
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error de codificación : " + e.getMessage());
         } catch (UnknownHostException e) {
-            System.out.println("Error desconocido : "+e.getMessage());
+            System.out.println("Error desconocido : " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Error :"+e.getMessage());
-        }
+            System.out.println("Error e/s:" + e.getMessage());
+        }// Fin del try con recursos
         sc.close();
     }
 }
