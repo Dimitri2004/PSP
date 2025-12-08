@@ -1,5 +1,5 @@
 
-package Tarea33;
+package Tarea34;
 import java.util.Scanner;
 
 public class Conexion {
