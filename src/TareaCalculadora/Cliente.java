@@ -23,7 +23,7 @@ public class Cliente {
 
             // Bucle principal para enviar operaciones al servidor
             while (true) {
-                System.out.println("[Cliente] Introduce tu operación o número ('salir' para terminar):");
+                System.out.println("[Cliente] Introduce tu operación (ej: 4+4 , 9*2000 , 4/5000) ('salir' para terminar):");
                 String entrada = sc.nextLine().trim();
 
                 // Comprobar si el usuario quiere salir
