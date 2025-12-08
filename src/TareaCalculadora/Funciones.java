@@ -63,6 +63,6 @@ public class Funciones {
     }
 
     public int getAns() {
-        return ans-1;
+        return ans;
     }
 }

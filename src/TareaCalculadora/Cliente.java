@@ -1,59 +1,67 @@
 package TareaCalculadora;
 
-import java.io.IOException;
-import java.net.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Cliente {
+    /**
+     * Punto de entrada del cliente.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
-        DatagramSocket datagramSocket = new DatagramSocket();
-        InetAddress direccionServidor = InetAddress.getByName("localhost");
+        Socket socket = new Socket("localhost", 9001);// punto de acceso al servidor
+        // Conexión al servidor
 
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));// bufferedReader para leer del servidor
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"))// bufferedWriter para escribir al servidor
+        ) {
+            System.out.println("[Cliente TCP] Conectado al servidor.");
+
+            // Bucle principal para enviar operaciones al servidor
             while (true) {
-                System.out.println("[Cliente] Introduce tu operación o número ('salir' para terminar):");
+                System.out.println("[Cliente] Introduce tu operación (ej: 4+4 , 9*2000 , 4/5000) ('salir' para terminar):");
                 String entrada = sc.nextLine().trim();
 
-                // Salir del cliente si escribe "salir"
+                // Comprobar si el usuario quiere salir
                 if (entrada.equalsIgnoreCase("salir")) {
-                    byte[] cerrar = entrada.getBytes();
-                    DatagramPacket fin = new DatagramPacket(cerrar, cerrar.length, direccionServidor, 9001);
-                    datagramSocket.send(fin);
-
-                    System.out.println("[Cliente] Saliendo del cliente...");
-                    break; // rompe el bucle y cierra socket y scanner
+                    writer.write("salir");
+                    writer.newLine();
+                    writer.flush();
+                    System.out.println("[Cliente] Saliendo...");
+                    break;
                 }
+                //Enviar la entrada al servidor
+                writer.write(entrada);
+                writer.newLine();
+                writer.flush();
 
-                // Enviar mensaje al servidor
-                byte[] bufferEnviar = entrada.getBytes();
-                DatagramPacket paquete = new DatagramPacket(bufferEnviar, bufferEnviar.length, direccionServidor, 9001);
-                datagramSocket.send(paquete);
+                // Leer la respuesta del servidor
+                String respuesta = reader.readLine();
 
-                // Recibir respuesta del servidor
-                byte[] bufferRecibido = new byte[8192];
-                DatagramPacket paqueteRecibido = new DatagramPacket(bufferRecibido, bufferRecibido.length);
-                datagramSocket.receive(paqueteRecibido);
-
-                String msjServidor = new String(paqueteRecibido.getData(), 0, paqueteRecibido.getLength()).trim();
-
-                // Validar que NO contenga letras distintas de las permitidas
+                // Validación de letras no permitidas
                 if (entrada.matches(".*[a-zA-Z]+.*")) {
                     if (entrada.contains("ans")) {
-                        System.out.println("[Servidor] Respuesta: " + msjServidor);
-                        continue; // no imprimimos otra vez
+                        System.out.println("[Servidor] Respuesta: " + respuesta);
+                        continue;
                     } else {
                         System.out.println("[Cliente] Error: solo se permite 'ans'");
                         continue;
                     }
                 }
-                System.out.println("[Servidor] Respuesta: " + msjServidor);
+                // Mostrar la respuesta del servidor
+                System.out.println("[Servidor] Respuesta: " + respuesta);
             }
-        } catch (Exception e) {
-            System.out.println("[Cliente] Error en la comunicación. Vuelve a intentar.");
-        } finally {
-            datagramSocket.close();
-            sc.close();
-        }
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Error de codificación : " + e.getMessage());
+        } catch (UnknownHostException e) {
+            System.out.println("Error desconocido : " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error e/s:" + e.getMessage());
+        }// Fin del try con recursos
+        sc.close();
     }
 }

@@ -1,93 +1,92 @@
 package TareaCalculadora;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Servidor {
 
-    public static void main(String[] args) throws IOException {
-        DatagramSocket socket = new DatagramSocket(9001);
-        byte[] buffer = new byte[8192]; // tamaño razonable
-        System.out.println("Servidor UDP escuchando en puerto 9001...");
-        Funciones func=new Funciones();
-        while (true) {
-            try {
-                DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
-                socket.receive(paquete);
-                // Obtener texto
-                String msj = new String(
-                        paquete.getData(),
-                        0,
-                        paquete.getLength(),
-                        StandardCharsets.UTF_8
-                ).trim();
-                if (extracted(msj)) continue;
-                if (extracted1(msj)) break;
-                String resultado;
-                if (extracted(msj, func, paquete, socket)) continue;
-                resultado = getResultado(func, msj);
-                // Respuesta al cliente
-                byte[] bufferEnviar = resultado.getBytes(StandardCharsets.UTF_8);
+    private static final int port = 9001;
+    private static final String log = "log.txt";
+    private static final DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-                DatagramPacket paqueteEnviar = new DatagramPacket(
-                        bufferEnviar,
-                        bufferEnviar.length,
-                        paquete.getAddress(),
-                        paquete.getPort()
-                );
-                socket.send(paqueteEnviar);
+    /**
+     * Punto de entrada del servidor.
+     * @param args
+     */
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Servidor escuchando en el puerto " + port + "...");
 
-            } catch (IOException e) {
-                // Si falló la lectura del paquete, NO se muere el servidor
-                System.out.println("Error al recibir paquete: " + e.getMessage());
+            while (true) {
+                // Espera conexiones de clientes
+                Socket cliente = serverSocket.accept();
+                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
+
+                // Cada cliente se atiende en un hilo aparte
+                new Thread(() -> manejarCliente(cliente)).start();
             }
-        }
-        socket.close();
-    }
-    private static String getResultado(Funciones func, String msj) {
-        String resultado;
-        try {
-            resultado = String.valueOf(func.Operaciones(msj));
 
-        } catch (Exception e) {
-            resultado = "ERROR: operación inválida.";
-            System.out.println("Error procesando mensaje: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Servidor cerrado.");
         }
-        return resultado;
     }
 
-    private static boolean extracted(String msj, Funciones func, DatagramPacket paquete, DatagramSocket socket) throws IOException {
-        if (msj.equals("ans")) {
-            String respuestaAns = String.valueOf(func.getAns());
+    /**
+     * Maneja la comunicación con un cliente específico.
+     * @param cliente
+     */
+    private static void manejarCliente(Socket cliente) {
+        Funciones func = new Funciones();
+        try (
+                BufferedReader reader = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(cliente.getOutputStream()))
+        ) {
+            String msj; // mensaje del cliente
+            while ((msj = reader.readLine()) != null) {
+                msj = msj.trim();
 
-            byte[] enviar = respuestaAns.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket packetEnviar = new DatagramPacket(enviar, enviar.length,
-                    paquete.getAddress(), paquete.getPort());
+                if (msj.equalsIgnoreCase("salir")) break;
 
-            socket.send(packetEnviar);
-            return true;
-        }
-        return false;
+                if (msj.isEmpty()) {
+                    writer.write("ERROR: mensaje vacío");
+                    writer.newLine();
+                    writer.flush();
+                    continue;
+                }
+                String resultado;
+                try {
+                    resultado = String.valueOf(func.Operaciones(msj));
+                } catch (Exception e) {
+                    resultado = "ERROR: operación inválida";
+                }// Enviar resultado al cliente
+
+                writer.write(resultado);
+                writer.newLine();
+                writer.flush();
+                log("Cliente " + cliente.getInetAddress().getHostAddress() + " Operación: " + msj + " → " + resultado);
+            }// Fin del while de mensajes
+        } catch (IOException e) {
+            System.out.println("Error con el cliente: " + e.getMessage());
+        } finally {
+            try {
+                cliente.close();
+            } catch (IOException ignored) {}
+        }// Fin del manejo del cliente
     }
 
-    private static boolean extracted1(String msj) {
-        if (msj.equalsIgnoreCase("Salir")) {
-            System.out.println("[Servidor] Servidor detenido por el cliente.");
-            return true;
-        }
-        return false;
-    }
+    /**
+     * Escribe un mensaje en el archivo de log con marca de tiempo.
+     * @param mensaje
+     */
 
-    private static boolean extracted(String msj) {
-        if (msj.isEmpty()) {
-            System.out.println("Servidor: paquete vacío recibido");
-            return true;
+    private static void log(String mensaje) {
+        try (FileWriter fw = new FileWriter(log, true)) {
+            fw.write("[" + LocalDateTime.now().format(formato) + "] " + mensaje + "\n");
+        } catch (IOException e) {
+            System.out.println("Error al escribir log: " + e.getMessage());
         }
-        return false;
     }
 }
