@@ -9,6 +9,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.List;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -38,8 +39,9 @@ public class Envio {
             List<Moneda> monedas = gson.fromJson(monedasArray, listType);
 
 // BUSCAR POR NOMBRE O SYMBOL
-            String buscado = "GRT";  // <-- aquí colocas el nombre o símbolo
-
+            System.out.println("Dime la bitcoin a buscar: ");// <-- aquí colocas el nombre o símbolo
+            Scanner sc=new Scanner(System.in);
+            String buscado=sc.nextLine();
             Moneda encontrada = monedas.stream()
                     .filter(m -> m.name.equalsIgnoreCase(buscado)
                             || m.symbol.equalsIgnoreCase(buscado))
