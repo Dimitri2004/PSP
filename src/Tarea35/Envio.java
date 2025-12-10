@@ -57,7 +57,7 @@ public class Envio {
                         " Variacion 24h: " + encontrada.percent_change_24h
                         );
             } else {
-                System.out.println("Moneda no encontrada.");
+                System.out.println("Moneda no encontrada");
             }
 
         } catch (Exception e) {

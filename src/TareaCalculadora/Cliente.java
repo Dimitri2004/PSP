@@ -1,6 +1,7 @@
 package TareaCalculadora;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -11,9 +12,14 @@ public class Cliente {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Socket socket = new Socket("localhost", 9001);// punto de acceso al servidor
+        Socket socket = null;// punto de acceso al servidor
+        try {
+            socket = new Socket("localhost", 9001);
+        } catch (IOException e) {
+            System.out.println("Error e/s "+e.getMessage());
+        }
         // Conexión al servidor
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));// bufferedReader para leer del servidor
@@ -55,13 +61,18 @@ public class Cliente {
                 // Mostrar la respuesta del servidor
                 System.out.println("[Servidor] Respuesta: " + respuesta);
             }
+            //Recogida de errores
         } catch (UnsupportedEncodingException e) {
             System.out.println("Error de codificación : " + e.getMessage());
         } catch (UnknownHostException e) {
             System.out.println("Error desconocido : " + e.getMessage());
+        } catch (ConnectException e){
+            System.out.println("Error conexion "+e.getMessage());
         } catch (IOException e) {
             System.out.println("Error e/s:" + e.getMessage());
-        }// Fin del try con recursos
+        }catch (NullPointerException e){
+            System.out.println("Error en soket "+e.getMessage());
+        }
         sc.close();
     }
 }

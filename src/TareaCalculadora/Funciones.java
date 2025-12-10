@@ -20,9 +20,12 @@ public class Funciones {
         if (msj.contains("/")) {
             return Div(msj);
         }
-
-        System.out.println("[Error]: operación mal formulada");
-        return 0;
+        if (msj.contains("ans")){
+            return ans;
+        }else{
+            System.out.println("[Error]: operación mal formulada");
+            return 0;
+        }
     }
 
 
@@ -60,9 +63,5 @@ public class Funciones {
         int resultado = getValor(partes[0]) / getValor(partes[1]);
         ans = resultado;
         return resultado;
-    }
-
-    public int getAns() {
-        return ans;
     }
 }

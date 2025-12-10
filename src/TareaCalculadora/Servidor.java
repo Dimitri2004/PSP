@@ -1,6 +1,7 @@
 package TareaCalculadora;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
@@ -68,6 +69,8 @@ public class Servidor {
                 writer.flush();
                 log("Cliente " + cliente.getInetAddress().getHostAddress() + " Operación: " + msj + " → " + resultado);
             }// Fin del while de mensajes
+        } catch (ConnectException e){
+            System.out.println("Error conexion "+e.getMessage());
         } catch (IOException e) {
             System.out.println("Error con el cliente: " + e.getMessage());
         } finally {
