@@ -36,7 +36,7 @@ public class Cliente {
                 if (entrada.equalsIgnoreCase("salir")) {
                     writer.write("salir");
                     writer.newLine();
-                    writer.flush();
+                    writer.flush(); //furza el envio de informacion
                     System.out.println("[Cliente] Saliendo...");
                     break;
                 }
