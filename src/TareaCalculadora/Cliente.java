@@ -25,7 +25,7 @@ public class Cliente {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));// bufferedReader para leer del servidor
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"))// bufferedWriter para escribir al servidor
         ) {
-            System.out.println("[Cliente TCP] Conectado al servidor.");
+            System.out.println("[Cliente] Conectado al servidor.");
 
             // Bucle principal para enviar operaciones al servidor
             while (true) {
@@ -61,7 +61,7 @@ public class Cliente {
                 // Mostrar la respuesta del servidor
                 System.out.println("[Servidor] Respuesta: " + respuesta);
             }
-            //Recogida de errores
+            //Recogida de errores (Imposible un error de crash creo)
         } catch (UnsupportedEncodingException e) {
             System.out.println("Error de codificación : " + e.getMessage());
         } catch (UnknownHostException e) {

@@ -15,7 +15,7 @@ Calculadora_PSP/
     ├── ServidorTCP.java
     ├── ClienteTCP.java
     ├── Funciones.java
-    └── Errores.java
+    └── ControladorClientes.java
 ```
 
 ---
@@ -67,13 +67,10 @@ String resultado = f.Operaciones("3*5"); // → 15.0
 
 ---
 
-### 4. `Errores`
+### 4. `Controlador`
 - **Rol:** Gestión de validaciones y control de flujo.  
 - **Responsabilidades:**
-  - Detecta entradas inválidas (valores nulos, cadenas vacías).
-  - Reconoce comandos especiales (ej. `"salir"` para desconectarse del servidor).
-  - Encapsula la lógica de comprobación antes de ejecutar una operación.
-  - Devuelve mensajes de error claros al cliente.
+  - Maneja el flujo de clientes
 
 ---
 

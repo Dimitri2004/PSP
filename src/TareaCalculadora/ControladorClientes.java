@@ -2,7 +2,7 @@ package TareaCalculadora;
 
 import java.net.Socket;
 
-import static TareaCalculadora.ManejarCliente.manejarCliente;
+import static TareaCalculadora.Servidor.manejarCliente;
 
 public class ControladorClientes extends Thread{
     private Socket cliente;
