@@ -13,10 +13,6 @@ public class Servidor {
     private static final String log = "log.txt";
     private static final DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    /**
-     * Punto de entrada del servidor.
-     * @param args
-     */
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Servidor escuchando en el puerto " + port + "...");

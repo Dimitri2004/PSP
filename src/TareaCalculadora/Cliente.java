@@ -9,8 +9,6 @@ import java.util.Scanner;
 public class Cliente {
     /**
      * Punto de entrada del cliente.
-     * @param args
-     * @throws IOException
      */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
